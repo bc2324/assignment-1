@@ -1,0 +1,32 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between; /* THIS fixes alignment */
+  align-items: center;
+  padding: 20px 30px;
+  border-bottom: 2px solid gray;
+  background-color: white;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.add-btn {
+  padding: 10px 14px;
+  border: 2px solid black;
+  background: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.main {
+  flex: 1;
+  background-color: #d3d3d3;
+}
