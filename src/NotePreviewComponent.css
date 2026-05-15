@@ -1,0 +1,25 @@
+.note-preview {
+    background-color: yellow;
+    width: 300px;
+    height: 300px;
+  
+    padding: 12px;
+    box-sizing: border-box;
+  
+    border: 1px solid black;
+  }
+  
+  .note-preview h2 {
+    margin: 0 0 12px 0;
+  }
+  
+  .note-preview p {
+    margin: 0;
+  }
+  
+  @media (max-width: 900px) {
+    .note-preview {
+      width: 200px;
+      height: 200px;
+    }
+  }
