@@ -1,25 +1,55 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import NotePreviewComponent from "./NotePreviewComponent";
+import { db } from "./firebase";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  updateDoc,
+  doc,
+} from "firebase/firestore";
 
 function App() {
-  const [notes, setNotes] = useState([
-    { id: 1, title: "My note 1", content: "Note content 1" },
-    { id: 2, title: "My note 2", content: "Note content 2" },
-    { id: 3, title: "My note 3", content: "Note content 3" },
-    { id: 4, title: "My note 4", content: "Note content 4" },
-  ]);
+  const [notes, setNotes] = useState([]);
 
-  function addNote() {
+  async function fetchNotes() {
+    const querySnapshot = await getDocs(collection(db, "notes"));
+    const notesArray = querySnapshot.docs.map((docSnap) => ({
+      id: docSnap.id,
+      ...docSnap.data(),
+    }));
+    setNotes(notesArray);
+  }
+
+  useEffect(() => {
+    fetchNotes();
+  }, []);
+
+  async function addNote() {
     const n = notes.length + 1;
 
     const newNote = {
-      id: n,
       title: `My note ${n}`,
       content: `Note content ${n}`,
     };
 
-    setNotes([...notes, newNote]);
+    const docRef = await addDoc(collection(db, "notes"), newNote);
+
+    setNotes([...notes, { id: docRef.id, ...newNote }]);
+  }
+
+  async function updateNote(noteId, title, content) {
+    const updatedNotes = notes.map((note) =>
+      note.id === noteId ? { ...note, title: title, content: content } : note
+    );
+
+    setNotes(updatedNotes);
+
+    await updateDoc(doc(db, "notes", noteId), {
+      title: title,
+      content: content,
+    });
   }
 
   return (
@@ -33,13 +63,13 @@ function App() {
       </header>
 
       <main className="notes-container">
-        <p>TEST NOTES: {notes.length}</p>
-
         {notes.map((note) => (
           <NotePreviewComponent
             key={note.id}
+            noteId={note.id}
             title={note.title}
             content={note.content}
+            updateNote={updateNote}
           />
         ))}
       </main>
